@@ -43,7 +43,7 @@ print "   " * firstday_wday
 # 右揃えで出力、wday==7の時（7で割り切れる時）改行
 (beginning_of_month..end_of_month).each do |n|
   # 今日の日付のとき色反転
-  if n == date.day
+  if n == date.day && this_month == date.month && this_year == date.year
     print Paint[n, :inverse] + " "
   else
     print n.to_s.rjust(2) + " "
