@@ -10,7 +10,7 @@ date = Date.today
 # コマンドラインの引数（m:月、y:年）をgetoptsで指定。引数がハッシュとして返ってくる。
 params = ARGV.getopts("", "m:#{date.month}", "y:#{date.year}")
 
-# 今月の月と年のvalueを取り出す→integerで
+# 入力された月と年のvalueを取り出す→integerで
 this_month = params.values[0].to_i
 this_year = params.values[1].to_i
 
@@ -33,17 +33,17 @@ puts <<~TEXT
 
 TEXT
 
-# １行目のスペース× 曜日の数（wday=0（日曜）ならスペース0, wday=6(土曜)ならスペース6
+# １行目のスペース× 曜日の数（wday=0（日曜）ならスペース0, wday=6(土曜)ならスペース6）
 print "   " * firstday_wday
 
 # カレンダー日出力
 # 右揃えで出力、wday==7の時（7で割り切れる時）改行
-(beginning_of_month..end_of_month).each do |n|
+(beginning_of_month..end_of_month).each do |day|
   # 今日の日付のとき色反転
-  if n == date.day && this_month == date.month && this_year == date.year
-    print Paint[n, :inverse] + " "
+  if day == date.day && this_month == date.month && this_year == date.year
+    print Paint[day, :inverse] + " "
   else
-    print n.to_s.rjust(2) + " "
+    print day.to_s.rjust(2) + " "
   end
   # 曜日は繰り返し１足していく
   firstday_wday += 1
