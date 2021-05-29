@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 
-#コマンドラインのオプションを取り扱う、Dateクラスを扱うためのrequire
+# コマンドラインのオプションを取り扱う、Dateクラスを扱うためのrequire
 require 'optparse'
 require 'date'
 require 'paint'
 
-#Dateクラスの今日という日付（年、月、日）をdateに代入
+# Dateクラスの今日という日付（年、月、日）をdateに代入
 date = Date.today
-#コマンドラインの引数（m:月、y:年）をgetoptsで指定。引数がハッシュとして返ってくる。
+# コマンドラインの引数（m:月、y:年）をgetoptsで指定。引数がハッシュとして返ってくる。
 params = ARGV.getopts("", "m:#{date.month}", "y:#{date.year}")
 
 # 今月の月と年のvalueを取り出す→integerで
@@ -22,7 +22,7 @@ end_of_date = Date.new(this_year, this_month, -1)
 beginning_of_month = beginning_date.day.to_i
 end_of_month = end_of_date.day.to_i
 
-#今月の始まりの曜日取得
+# 今月の始まりの曜日取得
 firstday_wday = beginning_date.wday
 lastday_wday = end_of_date.wday
 
@@ -45,7 +45,7 @@ print "   " * firstday_wday
   else
     print n.to_s.rjust(2) + " "
   end
-  #曜日は繰り返し１足していく
+  # 曜日は繰り返し１足していく
   firstday_wday += 1
   # 土曜日の時改行
   if firstday_wday % 7 == 0
