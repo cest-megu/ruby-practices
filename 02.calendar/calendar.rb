@@ -4,14 +4,11 @@
 require 'optparse'
 require 'date'
 require 'paint'
-require "irb"
 
 #Dateクラスの今日という日付（年、月、日）をdateに代入
 date = Date.today
 #コマンドラインの引数（m:月、y:年）をgetoptsで指定。引数がハッシュとして返ってくる。
 params = ARGV.getopts("", "m:#{date.month}", "y:#{date.year}")
-
-p params
 
 # 今月の月と年のvalueを取り出す→integerで
 this_month = params.values[0].to_i
