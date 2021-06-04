@@ -61,7 +61,7 @@ frames.each.with_index do |frame, i|
         frames[i].sum
       end
   else # 最終フレームの時
-    point += frames[i].sum
+    point += frames[i].sum # 最終フレームは全て足し算
   end
 end
 
