@@ -17,10 +17,8 @@ scores.each do |s|
   end
 end
 
-
-# フレーム毎に分割
+# フレームごとに分割
 frames = []
-
 # shotsの数が20の時(最後のフレームが2投で終わる時)
 if shots.length == 20
   shots.each_slice(2) do |s|
@@ -31,27 +29,39 @@ else
   shots.first(18).each_slice(2) do |s|
     frames << s
   end
-  if shots.length == 21
-    frames << shots.last(3)
-  else
-  # 最後のフレームの3投目がストライクで終わる時
-    frames << shots.last(4)
-  end
+  frames << shots.drop(18)
 end
-
-# binding.irb
 
 p frames
 
-# スペア分とストライク分を加算する
+# スペア分とストライク分を考慮してポイント加算
+# フレーム９番目と最終フレームのみ、加算方法が異なる
 point = 0
-frames.each do |frame|
-  if frame[0] == 10 # strike
-    point += frame.sum + 10
-  elsif frame.sum == 10 # spare
-    point += frame[0] + 10
-  else
-    point += frame.sum
+
+frames.each.with_index do |frame, i|
+  case i
+  when 0..7 # フレーム１〜８の時
+    if frames[i].first == 10 && frames[i+1].first == 10 # strikeが２連続
+      point += 10 + 10 + frames[i+2].first
+    elsif frames[i].first == 10 && frames[i+1].first != 10 # strikeが１回のみ
+      point += 10 + frame[0] + frame[1]
+    elsif frames[i].sum == 10 # spare
+      point += 10 + frames[i+1].first
+    else
+      point += frames[i].sum
+    end
+  when 8 # フレーム９の時
+    if frames[i].first == 10 && frames[i+1].first == 10 && frames[i+1][2] == 10 # strikeが3連続
+      point += 10 + 10 + 10
+    elsif frames[i].first == 10 && frames[i+1].first != 10 # strikeが１回のみ
+      point += 10 + frame[0] + frame[1]
+    elsif frames[i].sum == 10 # spare
+      point += 10 + frames[i+1].first
+    else
+      point += frames[i].sum
+    end
+  else # 最終フレームの時
+    point += frames[i].sum
   end
 end
 
