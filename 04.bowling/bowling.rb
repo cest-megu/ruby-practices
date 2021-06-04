@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
-
-require 'irb'
+# frozen_string_literal: true
 
 # 引数をとり、１投ごとに分割する
 score = ARGV[0]
@@ -24,8 +23,7 @@ if shots.length == 20
   shots.each_slice(2) do |s|
     frames << s
   end
-else
-# 最後のフレームが3投で終わる時
+else # 最後のフレームが3投で終わる時
   shots.first(18).each_slice(2) do |s|
     frames << s
   end
@@ -41,25 +39,27 @@ point = 0
 frames.each.with_index do |frame, i|
   case i
   when 0..7 # フレーム１〜８の時
-    if frames[i].first == 10 && frames[i+1].first == 10 # strikeが２連続
-      point += 10 + 10 + frames[i+2].first
-    elsif frames[i].first == 10 && frames[i+1].first != 10 # strikeが１回のみ
-      point += 10 + frame[0] + frame[1]
-    elsif frames[i].sum == 10 # spare
-      point += 10 + frames[i+1].first
-    else
-      point += frames[i].sum
-    end
+    point +=
+      if frames[i].first == 10 && frames[i + 1].first == 10 # strikeが２連続
+        10 + 10 + frames[i + 2].first
+      elsif frames[i].first == 10 && frames[i + 1].first != 10 # strikeが１回のみ
+        10 + frame[0] + frame[1]
+      elsif frames[i].sum == 10 # spare
+        10 + frames[i + 1].first
+      else
+        frames[i].sum
+      end
   when 8 # フレーム９の時
-    if frames[i].first == 10 && frames[i+1].first == 10 && frames[i+1][2] == 10 # strikeが3連続
-      point += 10 + 10 + 10
-    elsif frames[i].first == 10 && frames[i+1].first != 10 # strikeが１回のみ
-      point += 10 + frame[0] + frame[1]
-    elsif frames[i].sum == 10 # spare
-      point += 10 + frames[i+1].first
-    else
-      point += frames[i].sum
-    end
+    point +=
+      if frames[i].first == 10 && frames[i + 1][0] == 10 && frames[i + 1][2] == 10 # strikeが3連続
+        10 + 10 + 10
+      elsif frames[i].first == 10 && frames[i + 1][0] != 10 # strikeが１回のみ
+        10 + frame[0] + frame[1]
+      elsif frames[i].sum == 10 # spare
+        10 + frames[i + 1].first
+      else
+        frames[i].sum
+      end
   else # 最終フレームの時
     point += frames[i].sum
   end
