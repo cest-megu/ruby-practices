@@ -3,8 +3,24 @@ require 'optparse'
 
 # -a コマンドの実行結果 → 先頭に.がつくファイルも表示
 def ls_a
-  puts "先頭に.がつくファイル表示"
+  # カレントディレクトリ内にあるファイルを取得
+  list1 = []
+  list2 = []
+  list3 = []
+  Dir::entries(".").sort!.each.with_index(1) do |n, i|
+    n += " " * [24 - n.length, 0].max
+    if i % 3 == 1
+      list1 << n
+    elsif i % 3 == 2
+      list2 << n
+    else
+      list3 << n
+    end
+  end
 
+  puts list1.join("")
+  puts list2.join("")
+  puts list3.join("")
 end
 
 # -l コマンドの実行結果 → 詳細表示
@@ -20,16 +36,11 @@ end
 
 if ARGV[0] == "ls" && ARGV[1] == "-a"
   ls_a
-end
-
-if ARGV[0] == "ls" && ARGV[1] == "-l"
+elsif ARGV[0] == "ls" && ARGV[1] == "-l"
   ls_l
-end
-
-if ARGV[0] == "ls" && ARGV[1] == "-r"
+elsif ARGV[0] == "ls" && ARGV[1] == "-r"
   ls_r
 end
-
 
 
 
