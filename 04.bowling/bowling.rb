@@ -41,7 +41,7 @@ frames.each.with_index do |_frame, i|
                frames[i].sum
              end
            when 8 # フレーム９の時
-             if frames[i].first == 10 && frames[i + 1][0] == 10  # strikeが2連続
+             if frames[i].first == 10 && frames[i + 1][0] == 10 # strikeが2連続
                10 + 10 + frames[i + 1][2]
              elsif frames[i].first == 10 && frames[i + 1][0] != 10 # strikeが１回のみ
                10 + frames[i + 1][0] + frames[i + 1][1]
