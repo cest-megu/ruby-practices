@@ -24,8 +24,6 @@ shots.first(18).each_slice(2) do |s|
 end
 frames << shots.drop(18)
 
-p frames
-
 # スペア分とストライク分を考慮してポイント加算
 # フレーム９番目と最終フレームのみ、加算方法が異なる
 point = 0
