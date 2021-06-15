@@ -29,30 +29,50 @@ frames << shots.drop(18)
 point = 0
 
 frames.each.with_index do |_frame, i|
-  point += case i
-           when 0..7 # フレーム１〜８の時
-             if frames[i][0] == 10 && frames[i + 1][0] == 10 # strikeが２連続
-               10 + 10 + frames[i + 2][0]
-             elsif frames[i][0] == 10 && frames[i + 1][0] != 10 # strikeが１回のみ
-               10 + frames[i + 1][0] + frames[i + 1][1]
-             elsif frames[i].sum == 10 # spare
-               10 + frames[i + 1][0]
-             else
-               frames[i].sum
-             end
-           when 8 # フレーム９の時
-             if frames[i].first == 10 && frames[i + 1][0] == 10 # strikeが2連続
-               10 + 10 + frames[i + 1][2]
-             elsif frames[i].first == 10 && frames[i + 1][0] != 10 # strikeが１回のみ
-               10 + frames[i + 1][0] + frames[i + 1][1]
-             elsif frames[i].sum == 10 # spare
-               10 + frames[i + 1][0]
-             else
-               frames[i].sum
-             end
-           else # 最終フレームの時
-             frames[i].sum # 最終フレームは全て足し算
-           end
+  point +=  if i != 9 # 最終フレーム以外
+              if frames[i][0] == 10 && frames[i + 1][0] == 10 # ダブルストライク
+                case i
+                when 0..7 # フレーム１〜８の時
+                  10 + 10 + frames[i + 2][0]
+                when 8 # フレーム９の時
+                  10 + 10 + frames[i + 1][2]
+                end
+              elsif frames[i][0] == 10 && frames[i + 1][0] != 10 # ストライク
+                10 + frames[i + 1][0] + frames[i + 1][1]
+              elsif frames[i].sum == 10 # スペア
+                10 + frames[i + 1][0]
+              else # 普通のスコア
+                frames[i].sum
+              end
+            else # 最終フレームの時
+              frames[i].sum # 最終フレームは全て足し算
+            end
+
+
+          #  case i
+          #  when 0..7 # フレーム１〜８の時
+          #    if frames[i][0] == 10 && frames[i + 1][0] == 10 # strikeが２連続
+          #      10 + 10 + frames[i + 2][0]
+          #    elsif frames[i][0] == 10 && frames[i + 1][0] != 10 # strikeが１回のみ
+          #      10 + frames[i + 1][0] + frames[i + 1][1]
+          #    elsif frames[i].sum == 10 # spare
+          #      10 + frames[i + 1][0]
+          #    else
+          #      frames[i].sum
+          #    end
+          #  when 8 # フレーム９の時
+          #    if frames[i][0] == 10 && frames[i + 1][0] == 10 # strikeが2連続
+          #      10 + 10 + frames[i + 1][2]
+          #    elsif frames[i][0] == 10 && frames[i + 1][0] != 10 # strikeが１回のみ
+          #      10 + frames[i + 1][0] + frames[i + 1][1]
+          #    elsif frames[i].sum == 10 # spare
+          #      10 + frames[i + 1][0]
+          #    else
+          #      frames[i].sum
+          #    end
+          #  else # 最終フレームの時
+          #    frames[i].sum # 最終フレームは全て足し算
+          #  end
 end
 
 puts point
