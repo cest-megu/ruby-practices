@@ -1,12 +1,8 @@
 #!/usr/bin/env ruby
 require 'optparse'
 require 'irb'
+require 'etc'
 
-# 他ファイル参照
-require_relative 'ls_a'
-require_relative 'ls_l'
-require_relative 'ls_r'
-require_relative 'ls_alr'
 class Dir
   attr_accessor :list_of_dir
 
@@ -39,19 +35,108 @@ def ls
   puts list3.join('')
 end
 
-# コマンドラインの指定
-
-case ARGV[0]
-when 'ls'
-  if ARGV[1].nil?
-    ls
-  elsif ARGV[1] == '-a'
-    ls_a
-  elsif ARGV[1] == '-r'
-    ls_r
-  elsif ARGV[1] == '-l'
-    ls_l
-  elsif /-[alr]{3}/.match?(ARGV[1])
-    ls_alr
+def ls_l
+  files = []
+  num_of_blocks = 0
+  @list_of_dir.map do |file|
+    # カレントディレクトリ内のファイルをそれぞれfiles配列に格納
+    files << file
+    num_of_blocks += File.stat(file).blocks
   end
+  # ファイルのブロック数
+  puts "total #{num_of_blocks}"
+
+  files.map do |file|
+    stat = File.stat(file)
+    # パーミッション ８進数で表す
+    permission = stat.mode.to_s(8)
+    # ８進数の桁数を６桁にあわせる
+    permission = format('%06d', permission)
+    # ８進数を5つに分解
+    m = /(\d{2})(\d{1})(\d{1})(\d{1})(\d{1})/.match(permission)
+    file_type = m[1] # 1文字目のファイルの種類（タイプ）
+    some_permission = m[3..5] # owner,group, otherのパーミッション
+
+    case m[1]
+    when '04'
+      file_type = 'd'
+    when '10'
+      file_type = '-'
+    when '12'
+      file_type = 'l'
+    end
+
+    permission_array = []
+
+    some_permission.map do |p|
+      case p
+      when '0'
+        p = '---'
+      when '1'
+        p = '--x'
+      when '2'
+        p = '-w-'
+      when '3'
+        p = '-wx'
+      when '4'
+        p = 'r--'
+      when '5'
+        p = 'r-x'
+      when '6'
+        p = 'rw-'
+      when '7'
+        p = 'rwx'
+      end
+      permission_array << p
+    end
+
+    # パーミッションを記号で表す
+    permission = file_type + permission_array.join('')
+    # リンク数
+    num_of_links = stat.nlink.to_s
+    # オーナー名
+    owner_name = Etc.getpwuid(Process.uid).name
+    # グループ名
+    group = Etc.getgrgid(Process.gid).name
+    # ファイルサイズ
+    byte_size = stat.size.to_s.rjust(4)
+    # タイムスタンプ
+    timestamp = stat.mtime
+
+    puts [permission, num_of_links, owner_name, group, byte_size, timestamp, file].join('  ')
+  end
+end
+
+# コマンドラインの指定
+params = {}
+opt = OptionParser.new
+
+opt.on('-a'){ |v| params[:a] = v }
+opt.on('-r'){ |v| params[:r] = v }
+opt.on('-l'){ |v| params[:l] = v }
+
+opt.parse!(ARGV)
+
+# binding.irb
+@list_of_dir = Dir.entries('.').sort!.reverse
+case
+when params[:a] && params[:r] && params[:l]
+  ls_l
+when params[:a] && params[:r]
+  ls
+when params[:a] && params[:l]
+  @list_of_dir = Dir.entries('.').sort!
+  ls_l
+when params[:r] && params[:l]
+  @list_of_dir = Dir.glob('*').sort!.reverse
+  ls_l
+when params[:a]
+  @list_of_dir = Dir.entries('.').sort!
+  ls
+when params[:r]
+  @list_of_dir = Dir.glob('*').sort!.reverse
+  ls
+when params[:l]
+  @list_of_dir = Dir.glob('*').sort!
+  ls_l
 end
