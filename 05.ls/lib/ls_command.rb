@@ -8,11 +8,9 @@ class Dir
 
   def initialize(list_of_dir:)
     @list_of_dir = list_of_dir
+
   end
 end
-
-# lsコマンドの実行結果→. や .. などのディレクトリや、ドットで始まるファイルは含まれない
-@list_of_dir = Dir.glob('*').sort!
 
 def ls
   list1 = []
@@ -111,32 +109,30 @@ end
 params = {}
 opt = OptionParser.new
 
-opt.on('-a'){ |v| params[:a] = v }
-opt.on('-r'){ |v| params[:r] = v }
-opt.on('-l'){ |v| params[:l] = v }
+opt.on('-a') { |v| params[:a] = v }
+opt.on('-r') { |v| params[:r] = v }
+opt.on('-l') { |v| params[:l] = v }
 
 opt.parse!(ARGV)
 
-# binding.irb
 @list_of_dir = Dir.entries('.').sort!.reverse
-case
-when params[:a] && params[:r] && params[:l]
+if params[:a] && params[:r] && params[:l]
   ls_l
-when params[:a] && params[:r]
+elsif params[:a] && params[:r]
   ls
-when params[:a] && params[:l]
+elsif params[:a] && params[:l]
   @list_of_dir = Dir.entries('.').sort!
   ls_l
-when params[:r] && params[:l]
+elsif params[:r] && params[:l]
   @list_of_dir = Dir.glob('*').sort!.reverse
   ls_l
-when params[:a]
+elsif params[:a]
   @list_of_dir = Dir.entries('.').sort!
   ls
-when params[:r]
+elsif params[:r]
   @list_of_dir = Dir.glob('*').sort!.reverse
   ls
-when params[:l]
+elsif params[:l]
   @list_of_dir = Dir.glob('*').sort!
   ls_l
 end
