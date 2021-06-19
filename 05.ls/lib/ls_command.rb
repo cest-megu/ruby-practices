@@ -102,7 +102,6 @@ opt.on('-l') { |v| params[:l] = v }
 
 opt.parse!(ARGV)
 
-@list_of_dir = params[:a] ? Dir.entries('.').sort! : Dir.glob('*').sort!
-@list_of_dir = Dir.glob('*').sort!.reverse if params[:r]
-@list_of_dir = Dir.entries('.').sort!.reverse if params[:r] && params[:a]
+@list_of_dir = params[:a] ? Dir.entries('.').sort : Dir.glob('*').sort
+@list_of_dir = @list_of_dir.reverse if params[:r]
 params[:l] ? ls_l : ls
