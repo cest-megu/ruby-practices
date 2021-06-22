@@ -31,11 +31,12 @@ def wc_file
     bytesize = content_of_file.bytesize # バイト数
     sum_of_bytesize += bytesize
     # wc ファイル名の結果を配列に
-    list = [line_count.to_s.rjust(8), num_of_words.to_s.rjust(8), bytesize.to_s.rjust(8), file.rjust(30)]
-    puts list.join("")
-    total_list =[sum_of_line.to_s.rjust(8), sum_of_words.to_s.rjust(8), sum_of_bytesize.to_s.rjust(8), "total".rjust(13)]
+    list = [line_count.to_s.rjust(8), num_of_words.to_s.rjust(8), bytesize.to_s.rjust(8), file]
+    puts list.join(" ")
+    # binding.irb
+    total_list =[sum_of_line.to_s.rjust(8), sum_of_words.to_s.rjust(8), sum_of_bytesize.to_s.rjust(8), "total"]
   end
-  puts total_list.join("")
+  puts total_list.join(" ") if ARGV[1] != nil
 end
 
 wc_file
