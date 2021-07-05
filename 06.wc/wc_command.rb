@@ -1,73 +1,80 @@
 #!/usr/bin/env ruby
 require 'optparse'
-require 'irb'
 
-# 行数を取得
-def line_count(str)
+def main
+  opt = OptionParser.new
+  @params = {}
+  opt.on('-l') { |v| @params[:l] = v }
+  opt.parse!(ARGV)
+
+  ARGV.empty? ? read_stdin : wc(ARGV)
+end
+
+def count_line(str)
   str.lines.count
 end
 
-# 単語数を取得
-def words_count(str)
+def count_words(str)
   str.split(/\s+/).size
 end
 
-# バイト数を取得
-def bytesize(str)
+def count_bytesize(str)
   str.bytesize
 end
 
-# 行数のみ
-def wc_l
-  list = []
-  total_list = []
-  sum_of_line = 0
-  ARGV.each do |file|
-    sum_of_line += line_count(File.read(file))
-    list = [line_count(File.read(file)).to_s.rjust(8), file] # wc ファイル名の結果を配列に
-    puts list.join(' ')
-    total_list = [sum_of_line.to_s.rjust(8), 'total'] # totalの結果
+def wc(files)
+  line_sum = 0
+  words_sum = 0
+  bytesize_sum = 0
+  files.each do |file|
+    input = File.read(file)
+    line_count = count_line(input)
+    line_sum += line_count
+    words_count = count_words(input)
+    words_sum += words_count
+    bytesize_count = count_bytesize(input)
+    bytesize_sum += bytesize_count
+    list1 = [format_value(line_count), ' ', file]
+    list2 = [
+      format_value(line_count),
+      format_value(words_count),
+      format_value(bytesize_count),
+      ' ',
+      file
+    ]
+    if @params[:l]
+      puts list1.join('')
+    else
+      puts list2.join('')
+    end
   end
-  puts total_list.join(' ') unless ARGV[1].nil?
+  total_list1 = [format_value(line_sum), ' ', 'total']
+  total_list2 = [
+    format_value(line_sum),
+    format_value(words_sum),
+    format_value(bytesize_sum),
+    ' ',
+    'total'
+  ]
+  if files.size > 1
+    if @params[:l]
+      puts total_list1.join('')
+    else
+      puts total_list2.join('')
+    end
+  end
 end
 
-# wc ファイル名で、行数、単語数、バイト数、ファイル名を表す
-def wc
-  list = []
-  total_list = []
-  sum_of_line = 0
-  sum_of_words = 0
-  sum_of_bytesize = 0
-  ARGV.each do |file|
-    sum_of_line += line_count(File.read(file))
-    sum_of_words += words_count(File.read(file))
-    sum_of_bytesize += bytesize(File.read(file))
-    # wc ファイル名の結果を配列に
-    list = [line_count(File.read(file)).to_s.rjust(8), words_count(File.read(file)).to_s.rjust(8), bytesize(File.read(file)).to_s.rjust(8), file]
-    puts list.join(' ')
-    total_list = [sum_of_line.to_s.rjust(8), sum_of_words.to_s.rjust(8), sum_of_bytesize.to_s.rjust(8), 'total']
-  end
-  puts total_list.join(' ') unless ARGV[1].nil?
-end
-
-# 標準入力を受け取り、文字列でinputに保存する
-def show_data
+def read_stdin
   input = $stdin.read
-  print line_count(input).to_s.rjust(8)
-  print words_count(input).to_s.rjust(8)
-  print bytesize(input).to_s.rjust(8)
+  print format_value(count_line(input))
+  print format_value(count_words(input))
+  print format_value(count_bytesize(input))
   print "\n"
 end
 
-# コマンドラインの指定
-opt = OptionParser.new
-params = {}
-# オプションの引数
-opt.on('-l') { |v| params[:l] = v }
-opt.parse!(ARGV)
-
-if ARGV.empty? # ファイル指定なし（標準入力）
-  show_data
-else # ファイル指定あり
-  params[:l] ? wc_l : wc
+def format_value(value)
+  value.to_s.rjust(8)
 end
+
+main
