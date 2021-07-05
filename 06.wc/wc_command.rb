@@ -19,7 +19,7 @@ def count_words(str)
 end
 
 def count_bytesize(str)
-  str.reject(/\s+/).bytesize
+  str.bytesize
 end
 
 def wc(files)
