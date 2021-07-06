@@ -3,11 +3,11 @@ require 'optparse'
 
 def main
   opt = OptionParser.new
-  @params = {}
-  opt.on('-l') { |v| @params[:l] = v }
+  params = {}
+  opt.on('-l') { |v| params[:l] = v }
   opt.parse!(ARGV)
 
-  ARGV.empty? ? read_stdin : wc(ARGV)
+  ARGV.empty? ? read_stdin : wc(ARGV, params[:l])
 end
 
 def count_line(str)
@@ -22,7 +22,27 @@ def count_bytesize(str)
   str.bytesize
 end
 
-def wc(files)
+def format_value(value)
+  value.to_s.rjust(8)
+end
+
+def print_values(line, words, bytesize, file_name, params)
+  print format_value(line)
+  unless params
+    print format_value(words)
+    print format_value(bytesize)
+  end
+  print ' '
+  print file_name
+  print "\n"
+end
+
+def read_stdin
+  input = $stdin.read
+  print_values(count_line(input), count_words(input), count_bytesize(input), nil, nil)
+end
+
+def wc(files, params)
   line_sum = 0
   words_sum = 0
   bytesize_sum = 0
@@ -34,47 +54,9 @@ def wc(files)
     words_sum += words_count
     bytesize_count = count_bytesize(input)
     bytesize_sum += bytesize_count
-    list1 = [format_value(line_count), ' ', file]
-    list2 = [
-      format_value(line_count),
-      format_value(words_count),
-      format_value(bytesize_count),
-      ' ',
-      file
-    ]
-    if @params[:l]
-      puts list1.join('')
-    else
-      puts list2.join('')
-    end
+    print_values(line_count, words_count, bytesize_count, file, params)
   end
-  total_list1 = [format_value(line_sum), ' ', 'total']
-  total_list2 = [
-    format_value(line_sum),
-    format_value(words_sum),
-    format_value(bytesize_sum),
-    ' ',
-    'total'
-  ]
-  if files.size > 1
-    if @params[:l]
-      puts total_list1.join('')
-    else
-      puts total_list2.join('')
-    end
-  end
-end
-
-def read_stdin
-  input = $stdin.read
-  print format_value(count_line(input))
-  print format_value(count_words(input))
-  print format_value(count_bytesize(input))
-  print "\n"
-end
-
-def format_value(value)
-  value.to_s.rjust(8)
+  print_values(line_sum, words_sum, bytesize_sum, 'total', params) if files.size > 1
 end
 
 main
