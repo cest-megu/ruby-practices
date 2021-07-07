@@ -10,12 +10,12 @@ def main
   ARGV.empty? ? read_input(params[:l]) : output(ARGV, params[:l])
 end
 
-def read_input(params_boolean)
+def read_input(params_exist)
   input = $stdin.read
-  print_values(count_line(input), count_words(input), count_bytesize(input), nil, params_boolean)
+  print_values(count_line(input), count_words(input), count_bytesize(input), nil, params_exist)
 end
 
-def output(files, params_boolean)
+def output(files, params_exist)
   line_sum = 0
   word_sum = 0
   bytesize_sum = 0
@@ -27,14 +27,14 @@ def output(files, params_boolean)
     word_sum += word_count
     bytesize_count = count_bytesize(input)
     bytesize_sum += bytesize_count
-    print_values(line_count, word_count, bytesize_count, file, params_boolean)
+    print_values(line_count, word_count, bytesize_count, file, params_exist)
   end
-  print_values(line_sum, words_sum, bytesize_sum, 'total', params_boolean) if files.size > 1
+  print_values(line_sum, words_sum, bytesize_sum, 'total', params_exist) if files.size > 1
 end
 
-def print_values(line, words, bytesize, file_name, params_boolean)
+def print_values(line, words, bytesize, file_name, params_exist)
   print format_value(line)
-  unless params_boolean
+  unless params_exist
     print format_value(words)
     print format_value(bytesize)
   end
