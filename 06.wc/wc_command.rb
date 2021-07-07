@@ -7,15 +7,15 @@ def main
   opt.on('-l') { |v| params[:l] = v }
   opt.parse!(ARGV)
 
-  ARGV.empty? ? read_input(params[:l]) : output(ARGV, params[:l])
+  ARGV.empty? ? output_from_stdin(params[:l]) : output_from_files(ARGV, params[:l])
 end
 
-def read_input(params_exist)
+def output_from_stdin(line_count_only)
   input = $stdin.read
-  print_values(count_line(input), count_words(input), count_bytesize(input), nil, params_exist)
+  print_values(count_line(input), count_word(input), count_bytesize(input), nil, line_count_only)
 end
 
-def output(files, params_exist)
+def output_from_files(files, line_count_only)
   line_sum = 0
   word_sum = 0
   bytesize_sum = 0
@@ -23,20 +23,20 @@ def output(files, params_exist)
     input = File.read(file)
     line_count = count_line(input)
     line_sum += line_count
-    word_count = count_words(input)
+    word_count = count_word(input)
     word_sum += word_count
     bytesize_count = count_bytesize(input)
     bytesize_sum += bytesize_count
-    print_values(line_count, word_count, bytesize_count, file, params_exist)
+    print_values(line_count, word_count, bytesize_count, file, line_count_only)
   end
-  print_values(line_sum, words_sum, bytesize_sum, 'total', params_exist) if files.size > 1
+  print_values(line_sum, word_sum, bytesize_sum, 'total', line_count_only) if files.size > 1
 end
 
-def print_values(line, words, bytesize, file_name, params_exist)
-  print format_value(line)
-  unless params_exist
-    print format_value(words)
-    print format_value(bytesize)
+def print_values(line_count, word_count, bytesize_count, file_name, line_count_only)
+  print format_value(line_count)
+  unless line_count_only
+    print format_value(word_count)
+    print format_value(bytesize_count)
   end
   if file_name
     print ' '
@@ -49,7 +49,7 @@ def count_line(str)
   str.lines.count
 end
 
-def count_words(str)
+def count_word(str)
   str.split(/\s+/).size
 end
 
