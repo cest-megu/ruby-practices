@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+require './shot'
+require './frame'
+require './game'
 
 # 引数をとり、１投ごとに分割する
 score = ARGV[0]
