@@ -1,3 +1,4 @@
+require './shot'
 class Frame
   attr_reader :first_shot, :second_shot, :third_shot
 
@@ -8,9 +9,9 @@ class Frame
   end
 
   def score
-
+    first_shot.score + second_shot.score
   end
 end
 
 frame = Frame.new("1", "9")
-frame.score
+puts frame.score
