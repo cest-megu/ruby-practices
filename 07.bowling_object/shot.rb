@@ -1,3 +1,4 @@
+
 class Shot
   attr_reader :mark
 
@@ -10,7 +11,3 @@ class Shot
     mark.to_i
   end
 end
-
-shot = Shot.new('8')
-puts shot.mark
-puts shot.score
