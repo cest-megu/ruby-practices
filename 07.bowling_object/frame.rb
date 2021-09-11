@@ -9,17 +9,14 @@ class Frame
   end
 
   def strike?
+    first_shot.score == 10
+  end
 
-
+  def spare?
+    first_shot.score + second_shot.score == 10
   end
 
   def score
-    [first_shot.score, second_shot.score, third_shot.score].sum
+    first_shot.score + second_shot.score + third_shot.score
   end
-
-  frames = []
-
 end
-
-frame = Frame.new("6", "4", "X")
-puts frame.score

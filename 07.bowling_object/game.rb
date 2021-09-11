@@ -6,10 +6,15 @@ class Game
     @game_score = game_score
   end
 
-  # ストライク、スペアのときボーナスポイント
-  def
-
+  def to_s
+    "#{game_score}"
   end
+
+  def to_frame
+    "#{game_score}".split(',')
+  end
+
+  # ストライク、スペアのときボーナスポイント
 
   # ただ足すだけ
   def score
@@ -17,7 +22,3 @@ class Game
   end
 
 end
-
-# ARGV[0]
-game_score = Game.new('6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,6,4,5')
-puts game_scores = game_score.split(',')
