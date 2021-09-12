@@ -34,6 +34,9 @@ end
 class GameTest < Minitest::Test
   def test_game
     game_score = Game.new('6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,6,4,5')
-    p game_scores = game_score.to_frame
+    # １投ごとに分割する
+    assert_equal ["6", "3", "9", "0", "0", "3", "8", "2", "7", "3", "X", "9", "1", "8", "0", "X", "6", "4", "5"],
+     game_score.split_one_shot
+
   end
 end
